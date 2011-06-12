@@ -353,7 +353,8 @@ module DataMapper
           fields   = query.fields
           order_by = query.order
           group_by = if query.unique?
-            fields.select { |property| property.kind_of?(Property) }
+            group_by_fields = order_by.collect { |direction| direction.target.property }
+            Set.new(fields).merge(group_by_fields).select { |property| property.kind_of?(Property) }
           end
 
           conditions_statement, bind_values = conditions_statement(query.conditions, qualify)
